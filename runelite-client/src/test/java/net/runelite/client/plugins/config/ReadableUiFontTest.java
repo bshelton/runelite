@@ -26,19 +26,11 @@ package net.runelite.client.plugins.config;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
+import java.awt.RenderingHints;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.components.ProgressBar;
 import net.runelite.client.ui.laf.RuneLiteLAF;
@@ -60,6 +52,7 @@ public class ReadableUiFontTest
 				for (int size : new int[]{12, 14, 16, 18, 20})
 				{
 					assertTrue(RuneLiteLAF.setup(true, size));
+					assertEquals(RenderingHints.VALUE_TEXT_ANTIALIAS_GASP, UIManager.get(RenderingHints.KEY_TEXT_ANTIALIASING));
 					PluginListItem row = row("Agility");
 					row.setSize(row.getPreferredSize());
 					row.doLayout();
@@ -87,6 +80,9 @@ public class ReadableUiFontTest
 				assertEquals(12, new JLabel().getFont().getSize());
 				RuneLiteLAF.setup();
 				assertEquals(gameFont, UIManager.getFont("defaultFont"));
+				assertSame(FontManager.getRunescapeSmallFont(), FontManager.getUiSmallFont());
+				assertSame(FontManager.getRunescapeBoldFont(), FontManager.getUiBoldFont());
+				assertEquals(RenderingHints.VALUE_TEXT_ANTIALIAS_GASP, UIManager.get(RenderingHints.KEY_TEXT_ANTIALIASING));
 				assertEquals(20, row("Agility").getPreferredSize().height);
 				assertEquals(16, new ProgressBar().getPreferredSize().height);
 				assertEquals(FontManager.getDefaultFont().deriveFont(12.f), new HotkeyButton(null, false).getFont());
@@ -103,69 +99,4 @@ public class ReadableUiFontTest
 		return new PluginListItem(null, new PluginConfigurationDescriptor(name, "Font preview", new String[0], null, null));
 	}
 
-	@Test
-	public void renderComparison() throws Exception
-	{
-		SwingUtilities.invokeAndWait(() ->
-		{
-			try
-			{
-				File directory = new File("build/font-preview");
-				assertTrue(directory.isDirectory() || directory.mkdirs());
-				for (double scale : new double[]{1.0, 1.5, 2.0})
-				{
-					int width = (int) Math.ceil(245 * scale);
-					int height = (int) Math.ceil(350 * scale);
-					BufferedImage comparison = new BufferedImage(width * 3, height, BufferedImage.TYPE_INT_RGB);
-					Graphics2D canvas = comparison.createGraphics();
-					for (int column = 0; column < 3; column++)
-					{
-						RuneLiteLAF.setup(column != 0, column == 2 ? 16 : 14);
-						JPanel panel = new JPanel();
-						panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-						panel.setBorder(new EmptyBorder(10, 10, 10, 10));
-						panel.add(new JLabel(column == 0 ? "Original" : "Readable " + (column == 1 ? 14 : 16)));
-						for (String name : new String[]{"117 HD", "Account", "Agility", "Animation Smoothing", "Bank", "Bank Tags", "Barrows Brothers", "Boosts Information", "Chat Commands"})
-						{
-							PluginListItem row = row(name);
-							row.setMaximumSize(new Dimension(225, row.getPreferredSize().height));
-							panel.add(row);
-						}
-						JLabel heading = new JLabel("Window settings");
-						heading.setFont(FontManager.getUiBoldFont());
-						panel.add(heading);
-						panel.add(new JLabel("Remember client position"));
-						panel.setSize(245, 350);
-						layout(panel);
-						Graphics2D graphics = (Graphics2D) canvas.create(column * width, 0, width, height);
-						graphics.scale(scale, scale);
-						panel.printAll(graphics);
-						graphics.dispose();
-					}
-					canvas.dispose();
-					ImageIO.write(comparison, "png", new File(directory, "comparison-" + scale + ".png"));
-				}
-			}
-			catch (Exception ex)
-			{
-				throw new RuntimeException(ex);
-			}
-			finally
-			{
-				RuneLiteLAF.setup();
-			}
-		});
-	}
-
-	private static void layout(Container container)
-	{
-		container.doLayout();
-		for (Component child : container.getComponents())
-		{
-			if (child instanceof Container)
-			{
-				layout((Container) child);
-			}
-		}
-	}
 }

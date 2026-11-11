@@ -150,8 +150,7 @@ public class RuneLiteLAF extends FlatDarkLaf
 		d.put("RuneLite.readableUiFont", readableFont);
 		d.put("RuneLite.uiBoldFont", readableFont ? font.deriveFont(Font.BOLD) : FontManager.getRunescapeBoldFont());
 		d.put("RuneLite.uiSmallFont", readableFont ? font.deriveFont((float) Math.max(12, fontSize - 2)) : FontManager.getRunescapeSmallFont());
-		d.put(RenderingHints.KEY_TEXT_ANTIALIASING, readableFont
-			? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+		d.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 
 		return d;
 	}

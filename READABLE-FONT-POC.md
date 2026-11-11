@@ -1,52 +1,11 @@
-# Readable app font proof of concept
+# Optional interface font
 
-This branch adds an optional sans-serif font to RuneLite's desktop UI. It is intended to improve plugin-panel text at fractional display scaling, particularly 150%, while leaving the game's fonts and overlay font settings alone.
+Window settings > Sans-serif interface font selects Java's logical SansSerif font for desktop controls. The option defaults to off. Interface font size applies only when enabled (12–20, default 14, before display scaling). Restart after changing either setting.
 
-## Try it
+Built-in plugin panels inherit the theme font or use the UI font helpers. Game fonts, overlays, text shadows, and the existing GASP antialiasing policy are preserved. Third-party panels with explicit fonts may not follow the setting. Fixed panel widths can still truncate text.
 
-Build using JDK 17:
+The configuration keys remain readableUiFont and readableUiFontSize for compatibility with earlier prototype profiles. Enabling the option initializes the font before plugins construct their controls; disabling it preserves the original theme initialization order.
 
-```
-./gradlew :client:shadowJar
-```
+Build with JDK 17 using ./gradlew :client:shadowJar. Targeted validation: ./gradlew :client:test --tests '*ReadableUiFontTest' :client:checkstyleMain :client:checkstyleTest :client:pmdMain.
 
-Run the shaded JAR, open RuneLite settings, and enable **Window settings > Readable UI font**. Set **Readable UI font size** (12–20, default 14), then restart. Leave launcher/display scaling at your preferred size. The option defaults to off; disabling it and restarting restores the original font.
-
-For a separate test installation, launch with `-Duser.home=<test directory>` before `-jar`. To enable the experiment on its first launch, create `<test directory>/.runelite/settings.properties` containing:
-
-```properties
-runelite.readableUiFont=true
-runelite.readableUiFontSize=14
-```
-
-Use `-Dsun.java2d.uiScale=1.5` before `-jar` to reproduce 150% scaling. `--safe-mode --disable-telemetry` after the JAR disables external plugins/GPU and telemetry for a basic UI smoke test. Game authentication and normal gameplay are not part of this proof of concept's verification.
-
-## Scope
-
-- Standard Swing controls use a sans-serif font rendered at the chosen size, with grayscale antialiasing requested by the theme.
-- Plugin-list rows adapt their height. Configuration headings, Plugin Hub headings/metadata, the search clear button, and the plugin-error description use separate app-font helpers.
-- Plugin Hub row and footer heights accommodate larger text.
-- Skill Calculator, Time Tracking, Info, and World Switcher use the app-font helpers. Shadowed labels use normal Swing text rendering when readable mode is enabled.
-- The theme initializes before plugins construct their controls, so early-created panels receive the selected font.
-- Existing RuneScape font getters and overlay settings are unchanged.
-- Restart is required; this avoids partially updating cached or explicitly assigned fonts in already-created controls.
-
-This is not adjustable panel width or an icon upgrade. Long labels can still truncate in the existing fixed-width panels. The built-in Swing panel font overrides have been audited and migrated, including shared progress bars and developer panels. Third-party panels that explicitly select their own fonts may retain those fonts. A broader layout and font migration would be a separate contribution. No claim is made that fractional scaling of existing raster icons is fixed.
-
-## Validation
-
-```
-./gradlew :client:test --tests '*ReadableUiFontTest' :client:checkstyleMain :client:checkstyleTest :client:pmdMain :client:shadowJar
-```
-
-The regression test checks actual plugin-list label sizes and vertical fit at 12, 14, 16, 18, and 20, bounded invalid sizes, restoration of the original appearance, and unchanged game font identity. The rendering test produces comparisons at 100%, 150%, and 200% in `runelite-client/build/font-preview`. These are offscreen renders of Swing components, not screenshots of a logged-in game.
-
-Before proposing this upstream, discuss scope and configuration naming with maintainers. This branch is a personal experiment, not an upstream pull request.
-
-## Font convention and CI proposal
-
-Built-in Swing panels should inherit the theme font or use FontManager.getUiSmallFont()/getUiBoldFont(). Game overlays and game-rendered widgets retain their existing font APIs. The hotkey control preserves its original Dialog font when readable mode is disabled.
-
-A future enforcement rule belongs in runelite-client/pmd-ruleset.xml (with a custom rule implementation if type-aware detection is needed), run by :client:pmdMain. Existing .github/workflows/CI.yml invokes ci/build.sh, which runs buildAll and the client checks. No new typography enforcement rule is included in this prototype. Such a rule must distinguish Swing text from game drawing and allow reviewed exceptions; it would not automatically cover external Plugin Hub repositories.
-
-The expanded regression test checks progress-label vertical fit and hotkey font selection at every supported test size, plus restoration of the original defaults. The source audit leaves RuneScape font calls in plugins only for game/overlay rendering and game font measurement. This does not establish that every panel layout fits every possible label at the largest size.
+Tests cover font selection, size bounds, plugin-list and progress-label vertical fit, original defaults, unchanged game font identity, and preservation of the antialiasing policy. This does not establish every panel layout at every size or cross-platform visual equivalence. No typography enforcement rule is included.

@@ -316,16 +316,15 @@ public class ClientUI
 		});
 	}
 
-	/** Initialize the theme before plugins construct their Swing components. */
+	/**
+	 * Apply the optional interface font before plugins cache fonts in their controls.
+	 */
 	public void initLookAndFeel() throws Exception
 	{
-		SwingUtilities.invokeAndWait(() ->
+		if (config.readableUiFont())
 		{
-			// Set some sensible swing defaults
-			setupDefaults();
-
-			RuneLiteLAF.setup(config.readableUiFont(), config.readableUiFontSize());
-		});
+			SwingUtilities.invokeAndWait(() -> RuneLiteLAF.setup(true, config.readableUiFontSize()));
+		}
 	}
 
 	/**
@@ -335,6 +334,13 @@ public class ClientUI
 	{
 		SwingUtilities.invokeAndWait(() ->
 		{
+			// Preserve the original theme setup order when the optional font is disabled.
+			setupDefaults();
+			if (!config.readableUiFont())
+			{
+				RuneLiteLAF.setup();
+			}
+
 			// Create main window
 			frame = new ContainableFrame();
 

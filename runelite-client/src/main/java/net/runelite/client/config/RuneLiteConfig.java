@@ -61,8 +61,8 @@ public interface RuneLiteConfig extends Config
 
 	@ConfigItem(
 		keyName = "readableUiFont",
-		name = "Readable UI font",
-		description = "Use a smooth sans-serif font for the RuneLite interface. Does not change in-game text.",
+		name = "Sans-serif interface font",
+		description = "Use a sans-serif font for the RuneLite interface. Does not change in-game text.",
 		warning = "Please restart your client after changing this setting",
 		position = 48,
 		section = windowSettings
@@ -75,8 +75,8 @@ public interface RuneLiteConfig extends Config
 	@Range(min = 12, max = 20)
 	@ConfigItem(
 		keyName = "readableUiFontSize",
-		name = "Readable UI font size",
-		description = "Font size for Readable UI font, before display scaling. Does not change the game scale.",
+		name = "Interface font size",
+		description = "Font size when Sans-serif interface font is enabled, before display scaling.",
 		warning = "Please restart your client after changing this setting",
 		position = 49,
 		section = windowSettings

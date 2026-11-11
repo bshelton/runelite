@@ -284,12 +284,9 @@ class PluginHubPanel extends PluginPanel
 		}
 	}
 
-	private static int getPluginViewHeight()
-	{
-		JLabel label = new JLabel();
-		return UIManager.getBoolean("RuneLite.readableUiFont")
-			? Math.max(86, label.getFontMetrics(label.getFont()).getHeight() * 4 + 24) : 86;
-	}
+	// The interface font is fixed for the lifetime of this panel (restart required).
+	private final int pluginViewHeight = UIManager.getBoolean("RuneLite.readableUiFont")
+		? Math.max(86, getFontMetrics(getFont()).getHeight() * 4 + 24) : 86;
 
 	private class PluginView extends JPanel
 	{
@@ -378,7 +375,7 @@ class PluginHubPanel extends PluginPanel
 				? Math.max(16, version.getFontMetrics(version.getFont()).getHeight() + 4) : 16;
 			layout.setVerticalGroup(layout.createParallelGroup()
 				.addComponent(badge, GroupLayout.Alignment.TRAILING)
-				.addComponent(icon, getPluginViewHeight(), GroupLayout.DEFAULT_SIZE, getPluginViewHeight())
+				.addComponent(icon, pluginViewHeight, GroupLayout.DEFAULT_SIZE, pluginViewHeight)
 				.addGroup(layout.createSequentialGroup()
 					.addGap(5)
 					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -527,13 +524,13 @@ class PluginHubPanel extends PluginPanel
 		@Override
 		protected int getIndexNearPosition(int y)
 		{
-			return y / (getPluginViewHeight() + PluginView.SEPARATOR);
+			return y / (pluginViewHeight + PluginView.SEPARATOR);
 		}
 
 		@Override
 		protected Rectangle getItemPosition(int index)
 		{
-			return new Rectangle(LIST_BORDER, index * (getPluginViewHeight() + PluginView.SEPARATOR), getWidth() - LIST_BORDER * 2, getPluginViewHeight());
+			return new Rectangle(LIST_BORDER, index * (pluginViewHeight + PluginView.SEPARATOR), getWidth() - LIST_BORDER * 2, pluginViewHeight);
 		}
 
 		@Override
