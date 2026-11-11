@@ -52,6 +52,7 @@ import static net.runelite.api.GrandExchangeOfferState.CANCELLED_BUY;
 import static net.runelite.api.GrandExchangeOfferState.CANCELLED_SELL;
 import static net.runelite.api.GrandExchangeOfferState.EMPTY;
 import net.runelite.api.ItemComposition;
+import net.runelite.client.ui.AppFontManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.components.ThinProgressBar;
@@ -187,7 +188,6 @@ public class GrandExchangeOfferSlot extends JPanel
 		JPanel offerDetails = new JPanel();
 		offerDetails.setBackground(ColorScheme.DARKER_GRAY_COLOR);
 		offerDetails.setLayout(new BoxLayout(offerDetails, BoxLayout.PAGE_AXIS));
-		offerDetails.setPreferredSize(new Dimension(0, PANEL_HEIGHT));
 
 		JPanel offerDetailsWrapper = new JPanel();
 		offerDetailsWrapper.setBackground(ColorScheme.DARKER_GRAY_COLOR);
@@ -199,6 +199,7 @@ public class GrandExchangeOfferSlot extends JPanel
 		offerDetails.add(Box.createVerticalGlue());
 		offerDetails.add(offerDetailsWrapper);
 		offerDetails.add(Box.createVerticalGlue());
+		AppFontManager.bindPreferredHeight(offerDetails, 0, PANEL_HEIGHT);
 
 		detailsCard.add(offerDetails, BorderLayout.CENTER);
 		detailsCard.add(switchDetailsViewIcon, BorderLayout.EAST);

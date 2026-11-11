@@ -26,6 +26,7 @@ package net.runelite.client.ui;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
 import java.util.ArrayList;
@@ -51,6 +52,15 @@ public final class AppFontManager
 	{
 	}
 
+	/** Marks only fonts installed by the app theme, not arbitrary UIResource fonts. */
+	public static final class ThemeFont extends FontUIResource
+	{
+		public ThemeFont(Font font)
+		{
+			super(font);
+		}
+	}
+
 	public static void register(JComponent component)
 	{
 		synchronized (roots)
@@ -72,6 +82,19 @@ public final class AppFontManager
 		component.putClientProperty(LAYOUT, layout);
 		register(component);
 		layout.run();
+	}
+
+	/** Recompute natural height; a previous explicit size must not become the next minimum. */
+	public static void bindPreferredHeight(JComponent component, int width, int defaultHeight)
+	{
+		onFontChange(component, () ->
+		{
+			component.setPreferredSize(null);
+			Dimension natural = component.getPreferredSize();
+			int height = UIManager.getBoolean("RuneLite.customAppFont")
+				? Math.max(defaultHeight, natural.height) : defaultHeight;
+			component.setPreferredSize(new Dimension(width < 0 ? natural.width : width, height));
+		});
 	}
 
 	private static Font fontForRole(String role)
@@ -96,7 +119,6 @@ public final class AppFontManager
 		{
 			throw new IllegalStateException("App fonts must be updated on the Swing event thread");
 		}
-		Font previous = UIManager.getFont("defaultFont");
 		if (!RuneLiteLAF.setup(font))
 		{
 			throw new IllegalStateException("Unable to configure the app font");
@@ -115,7 +137,7 @@ public final class AppFontManager
 		{
 			collect(window, components);
 		}
-		Font replacement = new FontUIResource(UIManager.getFont("defaultFont"));
+		Font replacement = new ThemeFont(UIManager.getFont("defaultFont"));
 		for (Component component : components)
 		{
 			if (!(component instanceof JComponent))
@@ -128,7 +150,7 @@ public final class AppFontManager
 			{
 				control.setFont(fontForRole(role));
 			}
-			else if (control.getFont() instanceof FontUIResource || control.getFont() != null && control.getFont().equals(previous))
+			else if (control.getFont() instanceof ThemeFont)
 			{
 				control.setFont(replacement);
 			}

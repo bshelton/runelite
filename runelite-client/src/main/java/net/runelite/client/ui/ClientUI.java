@@ -108,7 +108,6 @@ import net.runelite.client.RuneLiteProperties;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.config.ExpandResizeType;
-import net.runelite.client.config.FontType;
 import net.runelite.client.config.RuneLiteConfig;
 import net.runelite.client.config.WarningOnExit;
 import net.runelite.client.eventbus.EventBus;
@@ -329,10 +328,7 @@ public class ClientUI
 	 */
 	public void initLookAndFeel() throws Exception
 	{
-		if (!config.appInterfaceFont().getFont().equals(FontType.REGULAR.getFont()))
-		{
-			SwingUtilities.invokeAndWait(() -> RuneLiteLAF.setup(config.appInterfaceFont().getFont()));
-		}
+		SwingUtilities.invokeAndWait(() -> RuneLiteLAF.setup(config.appInterfaceFont().getFont()));
 	}
 
 	/**
@@ -342,12 +338,8 @@ public class ClientUI
 	{
 		SwingUtilities.invokeAndWait(() ->
 		{
-			// Preserve the original theme setup order when the optional font is disabled.
+			// The theme is installed before plugin construction so inherited fonts are app-owned.
 			setupDefaults();
-			if (config.appInterfaceFont().getFont().equals(FontType.REGULAR.getFont()))
-			{
-				RuneLiteLAF.setup();
-			}
 
 			// Create main window
 			frame = new ContainableFrame();

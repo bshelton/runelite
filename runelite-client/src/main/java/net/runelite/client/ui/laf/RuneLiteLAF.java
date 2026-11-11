@@ -43,6 +43,7 @@ import java.util.Properties;
 import javax.swing.UIDefaults;
 import lombok.SneakyThrows;
 import net.runelite.client.config.FontType;
+import net.runelite.client.ui.AppFontManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 
@@ -146,7 +147,8 @@ public class RuneLiteLAF extends FlatDarkLaf
 
 		boolean custom = !appFont.equals(FontType.REGULAR.getFont());
 		Font font = custom ? appFont : FontManager.getRunescapeFont();
-		d.put("defaultFont", font);
+		// Tag app-owned fonts independently of equal fonts explicitly chosen by plugins.
+		d.put("defaultFont", new AppFontManager.ThemeFont(font));
 		d.put("RuneLite.customAppFont", custom);
 		d.put("RuneLite.uiBoldFont", custom ? font.deriveFont(font.getStyle() | Font.BOLD) : FontManager.getRunescapeBoldFont());
 		d.put("RuneLite.uiSmallFont", custom ? font.deriveFont((float) Math.max(1, font.getSize() - 2)) : FontManager.getRunescapeSmallFont());

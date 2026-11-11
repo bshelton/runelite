@@ -69,7 +69,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
@@ -632,7 +631,7 @@ class ConfigPanel extends PluginPanel
 		// to build components for each combobox element in order to compute the display size of the
 		// combobox
 		box.setRenderer(listCellRenderer);
-		AppFontManager.onFontChange(box, () -> box.setPreferredSize(new Dimension(box.getPreferredSize().width, UIManager.getBoolean("RuneLite.customAppFont") ? Math.max(22, box.getPreferredSize().height) : 22)));
+		AppFontManager.bindPreferredHeight(box, -1, 22);
 
 		try
 		{
