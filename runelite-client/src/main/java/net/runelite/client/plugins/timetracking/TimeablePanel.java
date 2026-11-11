@@ -93,10 +93,10 @@ public class TimeablePanel<T> extends JPanel
 		infoPanel.setBorder(new EmptyBorder(4, 4, 4, 0));
 
 		text = new JShadowedLabel(title);
-		text.setFont(FontManager.getRunescapeSmallFont());
+		text.setFont(FontManager.getUiSmallFont());
 		text.setForeground(Color.WHITE);
 
-		estimate.setFont(FontManager.getRunescapeSmallFont());
+		estimate.setFont(FontManager.getUiSmallFont());
 		estimate.setForeground(Color.GRAY);
 
 		infoPanel.add(text);

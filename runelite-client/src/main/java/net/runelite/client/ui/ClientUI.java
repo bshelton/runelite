@@ -316,10 +316,8 @@ public class ClientUI
 		});
 	}
 
-	/**
-	 * Initialize UI.
-	 */
-	public void init() throws Exception
+	/** Initialize the theme before plugins construct their Swing components. */
+	public void initLookAndFeel() throws Exception
 	{
 		SwingUtilities.invokeAndWait(() ->
 		{
@@ -327,7 +325,16 @@ public class ClientUI
 			setupDefaults();
 
 			RuneLiteLAF.setup(config.readableUiFont(), config.readableUiFontSize());
+		});
+	}
 
+	/**
+	 * Initialize UI.
+	 */
+	public void init() throws Exception
+	{
+		SwingUtilities.invokeAndWait(() ->
+		{
 			// Create main window
 			frame = new ContainableFrame();
 

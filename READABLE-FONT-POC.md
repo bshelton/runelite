@@ -26,6 +26,8 @@ Use `-Dsun.java2d.uiScale=1.5` before `-jar` to reproduce 150% scaling. `--safe-
 - Standard Swing controls use a sans-serif font rendered at the chosen size, with grayscale antialiasing requested by the theme.
 - Plugin-list rows adapt their height. Configuration headings, Plugin Hub headings/metadata, the search clear button, and the plugin-error description use separate app-font helpers.
 - Plugin Hub row and footer heights accommodate larger text.
+- Skill Calculator, Time Tracking, Info, and World Switcher use the app-font helpers. Shadowed labels use normal Swing text rendering when readable mode is enabled.
+- The theme initializes before plugins construct their controls, so early-created panels receive the selected font.
 - Existing RuneScape font getters and overlay settings are unchanged.
 - Restart is required; this avoids partially updating cached or explicitly assigned fonts in already-created controls.
 

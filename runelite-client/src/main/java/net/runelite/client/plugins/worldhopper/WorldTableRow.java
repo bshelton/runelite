@@ -312,7 +312,7 @@ class WorldTableRow extends JPanel
 		column.setBorder(new EmptyBorder(0, 5, 0, 5));
 
 		playerCountField = new JLabel(playerCountString(world.getPlayers()));
-		playerCountField.setFont(FontManager.getRunescapeSmallFont());
+		playerCountField.setFont(FontManager.getUiSmallFont());
 
 		column.add(playerCountField, BorderLayout.WEST);
 
@@ -325,7 +325,7 @@ class WorldTableRow extends JPanel
 		column.setBorder(new EmptyBorder(0, 5, 0, 5));
 
 		pingField = new JLabel("-");
-		pingField.setFont(FontManager.getRunescapeSmallFont());
+		pingField.setFont(FontManager.getUiSmallFont());
 
 		column.add(pingField, BorderLayout.EAST);
 
@@ -347,7 +347,7 @@ class WorldTableRow extends JPanel
 
 		String activity = world.getActivity();
 		activityField = new JLabel(activity);
-		activityField.setFont(FontManager.getRunescapeSmallFont());
+		activityField.setFont(FontManager.getUiSmallFont());
 		if (activity != null && activity.length() > 16)
 		{
 			activityField.setToolTipText(activity);

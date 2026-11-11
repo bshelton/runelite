@@ -89,7 +89,7 @@ abstract class ClockPanel extends JPanel
 		nameInput.setText(clock.getName());
 		nameInput.setBorder(null);
 		nameInput.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		nameInput.setPreferredSize(new Dimension(0, 24));
+		nameInput.setPreferredSize(new Dimension(0, Math.max(24, nameInput.getTextField().getPreferredSize().height + 4)));
 		nameInput.getTextField().setBorder(new EmptyBorder(0, 8, 0, 0));
 		nameInput.addActionListener(e -> getParent().requestFocusInWindow());
 
@@ -122,7 +122,7 @@ abstract class ClockPanel extends JPanel
 		displayInput.setEditable(editable);
 		displayInput.setBorder(null);
 		displayInput.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		displayInput.setPreferredSize(new Dimension(0, 24));
+		displayInput.setPreferredSize(new Dimension(0, Math.max(24, displayInput.getTextField().getPreferredSize().height + 4)));
 		displayInput.getTextField().setHorizontalAlignment(SwingConstants.CENTER);
 		displayInput.addActionListener(e -> getParent().requestFocusInWindow());
 

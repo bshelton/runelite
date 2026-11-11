@@ -108,7 +108,7 @@ public class FarmingTabPanel extends TabContentPanel
 					groupLabel.setBorder(new EmptyBorder(15, 0, 0, 0));
 				}
 
-				groupLabel.setFont(FontManager.getRunescapeSmallFont());
+				groupLabel.setFont(FontManager.getUiSmallFont());
 
 				add(groupLabel, c);
 				c.gridy++;

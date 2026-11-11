@@ -26,6 +26,7 @@ package net.runelite.client.ui.components.shadowlabel;
 
 import java.awt.Graphics;
 import javax.swing.JLabel;
+import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicLabelUI;
 
 class JShadowedLabelUI extends BasicLabelUI
@@ -33,6 +34,13 @@ class JShadowedLabelUI extends BasicLabelUI
 	@Override
 	protected void paintEnabledText(JLabel l, Graphics g, String s, int textX, int textY)
 	{
+		if (UIManager.getBoolean("RuneLite.readableUiFont"))
+		{
+			// Use Swing's text rendering hints instead of drawing pixel-style shadows.
+			super.paintEnabledText(l, g, s, textX, textY);
+			return;
+		}
+
 		if (l instanceof JShadowedLabel)
 		{
 			JShadowedLabel ll = (JShadowedLabel) l;

@@ -280,7 +280,7 @@ class SkillCalculator extends JPanel
 		JCheckBox uiCheckbox = new JCheckBox();
 
 		uiLabel.setForeground(Color.WHITE);
-		uiLabel.setFont(FontManager.getRunescapeSmallFont());
+		uiLabel.setFont(FontManager.getUiSmallFont());
 
 		uiOption.setBorder(BorderFactory.createEmptyBorder(1, 7, 1, 0));
 
