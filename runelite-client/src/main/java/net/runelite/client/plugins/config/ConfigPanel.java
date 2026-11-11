@@ -306,7 +306,7 @@ class ConfigPanel extends PluginPanel
 			String name = cs.name();
 			final JLabel sectionName = new JLabel(name);
 			sectionName.setForeground(ColorScheme.BRAND_ORANGE);
-			sectionName.setFont(FontManager.getRunescapeBoldFont());
+			sectionName.setFont(FontManager.getUiBoldFont());
 			sectionName.setToolTipText("<html>" + name + ":<br>" + cs.description() + "</html>");
 			sectionHeader.add(sectionName, BorderLayout.CENTER);
 
@@ -630,7 +630,7 @@ class ConfigPanel extends PluginPanel
 		// to build components for each combobox element in order to compute the display size of the
 		// combobox
 		box.setRenderer(listCellRenderer);
-		box.setPreferredSize(new Dimension(box.getPreferredSize().width, 22));
+		box.setPreferredSize(new Dimension(box.getPreferredSize().width, Math.max(22, box.getPreferredSize().height)));
 
 		try
 		{

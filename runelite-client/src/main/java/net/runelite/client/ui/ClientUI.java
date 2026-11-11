@@ -326,7 +326,7 @@ public class ClientUI
 			// Set some sensible swing defaults
 			setupDefaults();
 
-			RuneLiteLAF.setup();
+			RuneLiteLAF.setup(config.readableUiFont(), config.readableUiFontSize());
 
 			// Create main window
 			frame = new ContainableFrame();

@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import javax.swing.UIManager;
 import javax.swing.text.StyleContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -147,6 +148,19 @@ public class FontManager
 			runescapeFont.getFamily(),
 			runescapeSmallFont.getFamily()
 		);
+	}
+
+	/** App UI fonts only; in-game overlays retain the RuneScape font getters. */
+	public static Font getUiBoldFont()
+	{
+		Font font = UIManager.getFont("RuneLite.uiBoldFont");
+		return font != null ? font : runescapeBoldFont;
+	}
+
+	public static Font getUiSmallFont()
+	{
+		Font font = UIManager.getFont("RuneLite.uiSmallFont");
+		return font != null ? font : runescapeSmallFont;
 	}
 
 	public static List<String> getSystemFonts()

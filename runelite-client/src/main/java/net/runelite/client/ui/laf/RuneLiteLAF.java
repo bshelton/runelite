@@ -28,6 +28,7 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatSystemProperties;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.RenderingHints;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -46,17 +47,32 @@ import net.runelite.client.ui.FontManager;
 
 public class RuneLiteLAF extends FlatDarkLaf
 {
+	private final boolean readableFont;
+	private final int fontSize;
+
 	public static boolean setup()
+	{
+		return setup(false, 14);
+	}
+
+	public static boolean setup(boolean readableFont, int fontSize)
 	{
 		// flatlaf always gets this wrong
 		System.setProperty(FlatSystemProperties.UI_SCALE_ENABLED, "false");
 
-		return setup(new RuneLiteLAF());
+		return setup(new RuneLiteLAF(readableFont, fontSize));
+	}
+
+	public RuneLiteLAF()
+	{
+		this(false, 14);
 	}
 
 	@SneakyThrows
-	public RuneLiteLAF()
+	public RuneLiteLAF(boolean readableFont, int fontSize)
 	{
+		this.readableFont = readableFont;
+		this.fontSize = Math.max(12, Math.min(20, fontSize));
 		Map<String, String> extras = new HashMap<>();
 
 		// load the properties ourselves to avoid platform specific styles
@@ -129,8 +145,13 @@ public class RuneLiteLAF extends FlatDarkLaf
 	{
 		UIDefaults d = super.getDefaults();
 
-		d.put("defaultFont", FontManager.getRunescapeFont());
-		d.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+		Font font = readableFont ? new Font(Font.SANS_SERIF, Font.PLAIN, fontSize) : FontManager.getRunescapeFont();
+		d.put("defaultFont", font);
+		d.put("RuneLite.readableUiFont", readableFont);
+		d.put("RuneLite.uiBoldFont", readableFont ? font.deriveFont(Font.BOLD) : FontManager.getRunescapeBoldFont());
+		d.put("RuneLite.uiSmallFont", readableFont ? font.deriveFont((float) Math.max(12, fontSize - 2)) : FontManager.getRunescapeSmallFont());
+		d.put(RenderingHints.KEY_TEXT_ANTIALIASING, readableFont
+			? RenderingHints.VALUE_TEXT_ANTIALIAS_ON : RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 
 		return d;
 	}

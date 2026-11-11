@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import lombok.Getter;
 import net.runelite.client.ui.ColorScheme;
@@ -100,10 +101,11 @@ class PluginListItem extends JPanel implements SearchablePlugin
 		}
 
 		setLayout(new BorderLayout(3, 0));
-		setPreferredSize(new Dimension(PluginPanel.PANEL_WIDTH, 20));
 
 		JLabel nameLabel = new JLabel(pluginConfig.getName());
 		nameLabel.setForeground(Color.WHITE);
+		setPreferredSize(new Dimension(PluginPanel.PANEL_WIDTH, UIManager.getBoolean("RuneLite.readableUiFont")
+			? Math.max(20, nameLabel.getPreferredSize().height + 4) : 20));
 
 		if (!pluginConfig.getDescription().isEmpty())
 		{

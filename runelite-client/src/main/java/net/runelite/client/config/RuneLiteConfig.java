@@ -60,6 +60,33 @@ public interface RuneLiteConfig extends Config
 	String overlaySettings = "overlaySettings";
 
 	@ConfigItem(
+		keyName = "readableUiFont",
+		name = "Readable UI font",
+		description = "Use a smooth sans-serif font for the RuneLite interface. Does not change in-game text.",
+		warning = "Please restart your client after changing this setting",
+		position = 48,
+		section = windowSettings
+	)
+	default boolean readableUiFont()
+	{
+		return false;
+	}
+
+	@Range(min = 12, max = 20)
+	@ConfigItem(
+		keyName = "readableUiFontSize",
+		name = "Readable UI font size",
+		description = "Font size for Readable UI font, before display scaling. Does not change the game scale.",
+		warning = "Please restart your client after changing this setting",
+		position = 49,
+		section = windowSettings
+	)
+	default int readableUiFontSize()
+	{
+		return 14;
+	}
+
+	@ConfigItem(
 		keyName = "gameSize",
 		name = "Game size",
 		description = "The game will resize to this resolution upon starting the client.",
