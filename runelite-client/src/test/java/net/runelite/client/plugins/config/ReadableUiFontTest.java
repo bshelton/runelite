@@ -40,6 +40,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.FontManager;
+import net.runelite.client.ui.components.ProgressBar;
 import net.runelite.client.ui.laf.RuneLiteLAF;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
@@ -67,6 +68,18 @@ public class ReadableUiFontTest
 					assertTrue(label.getHeight() >= label.getFontMetrics(label.getFont()).getHeight());
 					assertEquals(Font.SANS_SERIF, label.getFont().getFamily());
 					assertSame(gameFont, FontManager.getRunescapeFont());
+					ProgressBar progress = new ProgressBar();
+					progress.setLeftLabel("Progress");
+					progress.setSize(225, progress.getPreferredSize().height);
+					progress.doLayout();
+					for (Component component : progress.getComponents())
+					{
+						JLabel progressLabel = (JLabel) component;
+						assertEquals(Font.SANS_SERIF, progressLabel.getFont().getFamily());
+						assertTrue(progressLabel.getHeight() - progressLabel.getInsets().top
+							>= progressLabel.getFontMetrics(progressLabel.getFont()).getHeight());
+					}
+					assertEquals(FontManager.getUiSmallFont(), new HotkeyButton(null, false).getFont());
 				}
 				RuneLiteLAF.setup(true, 100);
 				assertEquals(20, new JLabel().getFont().getSize());
@@ -75,6 +88,8 @@ public class ReadableUiFontTest
 				RuneLiteLAF.setup();
 				assertEquals(gameFont, UIManager.getFont("defaultFont"));
 				assertEquals(20, row("Agility").getPreferredSize().height);
+				assertEquals(16, new ProgressBar().getPreferredSize().height);
+				assertEquals(FontManager.getDefaultFont().deriveFont(12.f), new HotkeyButton(null, false).getFont());
 			}
 			finally
 			{

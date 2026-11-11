@@ -172,7 +172,7 @@ class InventoryDeltaPanel extends JPanel implements Scrollable
 		gridItem.setPreferredSize(ITEM_SIZE);
 		gridItem.setVerticalAlignment(SwingConstants.CENTER);
 		gridItem.setHorizontalAlignment(SwingConstants.CENTER);
-		gridItem.setFont(FontManager.getRunescapeSmallFont());
+		gridItem.setFont(FontManager.getUiSmallFont());
 
 		final Item item = inventoryItem.getItem();
 		if (item.getId() == -1)

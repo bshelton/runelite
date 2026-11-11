@@ -31,7 +31,7 @@ Use `-Dsun.java2d.uiScale=1.5` before `-jar` to reproduce 150% scaling. `--safe-
 - Existing RuneScape font getters and overlay settings are unchanged.
 - Restart is required; this avoids partially updating cached or explicitly assigned fonts in already-created controls.
 
-This is not adjustable panel width or an icon upgrade. Long labels can still truncate in the existing fixed-width panels. Panels that explicitly select their own fonts (including some built-in and third-party panels) may retain those fonts. A broader layout and font migration would be a separate contribution. No claim is made that fractional scaling of existing raster icons is fixed.
+This is not adjustable panel width or an icon upgrade. Long labels can still truncate in the existing fixed-width panels. The built-in Swing panel font overrides have been audited and migrated, including shared progress bars and developer panels. Third-party panels that explicitly select their own fonts may retain those fonts. A broader layout and font migration would be a separate contribution. No claim is made that fractional scaling of existing raster icons is fixed.
 
 ## Validation
 
@@ -42,3 +42,11 @@ This is not adjustable panel width or an icon upgrade. Long labels can still tru
 The regression test checks actual plugin-list label sizes and vertical fit at 12, 14, 16, 18, and 20, bounded invalid sizes, restoration of the original appearance, and unchanged game font identity. The rendering test produces comparisons at 100%, 150%, and 200% in `runelite-client/build/font-preview`. These are offscreen renders of Swing components, not screenshots of a logged-in game.
 
 Before proposing this upstream, discuss scope and configuration naming with maintainers. This branch is a personal experiment, not an upstream pull request.
+
+## Font convention and CI proposal
+
+Built-in Swing panels should inherit the theme font or use FontManager.getUiSmallFont()/getUiBoldFont(). Game overlays and game-rendered widgets retain their existing font APIs. The hotkey control preserves its original Dialog font when readable mode is disabled.
+
+A future enforcement rule belongs in runelite-client/pmd-ruleset.xml (with a custom rule implementation if type-aware detection is needed), run by :client:pmdMain. Existing .github/workflows/CI.yml invokes ci/build.sh, which runs buildAll and the client checks. No new typography enforcement rule is included in this prototype. Such a rule must distinguish Swing text from game drawing and allow reviewed exceptions; it would not automatically cover external Plugin Hub repositories.
+
+The expanded regression test checks progress-label vertical fit and hotkey font selection at every supported test size, plus restoration of the original defaults. The source audit leaves RuneScape font calls in plugins only for game/overlay rendering and game font measurement. This does not establish that every panel layout fits every possible label at the largest size.
