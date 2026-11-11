@@ -42,37 +42,36 @@ import java.util.Map;
 import java.util.Properties;
 import javax.swing.UIDefaults;
 import lombok.SneakyThrows;
+import net.runelite.client.config.FontType;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 
 public class RuneLiteLAF extends FlatDarkLaf
 {
-	private final boolean readableFont;
-	private final int fontSize;
+	private final Font appFont;
 
 	public static boolean setup()
 	{
-		return setup(false, 14);
+		return setup(FontType.REGULAR.getFont());
 	}
 
-	public static boolean setup(boolean readableFont, int fontSize)
+	public static boolean setup(Font appFont)
 	{
 		// flatlaf always gets this wrong
 		System.setProperty(FlatSystemProperties.UI_SCALE_ENABLED, "false");
 
-		return setup(new RuneLiteLAF(readableFont, fontSize));
+		return setup(new RuneLiteLAF(appFont));
 	}
 
 	public RuneLiteLAF()
 	{
-		this(false, 14);
+		this(FontType.REGULAR.getFont());
 	}
 
 	@SneakyThrows
-	public RuneLiteLAF(boolean readableFont, int fontSize)
+	public RuneLiteLAF(Font appFont)
 	{
-		this.readableFont = readableFont;
-		this.fontSize = Math.max(12, Math.min(20, fontSize));
+		this.appFont = appFont;
 		Map<String, String> extras = new HashMap<>();
 
 		// load the properties ourselves to avoid platform specific styles
@@ -145,11 +144,12 @@ public class RuneLiteLAF extends FlatDarkLaf
 	{
 		UIDefaults d = super.getDefaults();
 
-		Font font = readableFont ? new Font(Font.SANS_SERIF, Font.PLAIN, fontSize) : FontManager.getRunescapeFont();
+		boolean custom = !appFont.equals(FontType.REGULAR.getFont());
+		Font font = custom ? appFont : FontManager.getRunescapeFont();
 		d.put("defaultFont", font);
-		d.put("RuneLite.readableUiFont", readableFont);
-		d.put("RuneLite.uiBoldFont", readableFont ? font.deriveFont(Font.BOLD) : FontManager.getRunescapeBoldFont());
-		d.put("RuneLite.uiSmallFont", readableFont ? font.deriveFont((float) Math.max(12, fontSize - 2)) : FontManager.getRunescapeSmallFont());
+		d.put("RuneLite.customAppFont", custom);
+		d.put("RuneLite.uiBoldFont", custom ? font.deriveFont(font.getStyle() | Font.BOLD) : FontManager.getRunescapeBoldFont());
+		d.put("RuneLite.uiSmallFont", custom ? font.deriveFont((float) Math.max(1, font.getSize() - 2)) : FontManager.getRunescapeSmallFont());
 		d.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 
 		return d;

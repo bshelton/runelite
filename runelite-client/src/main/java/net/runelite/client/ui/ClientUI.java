@@ -108,6 +108,7 @@ import net.runelite.client.RuneLiteProperties;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.config.ExpandResizeType;
+import net.runelite.client.config.FontType;
 import net.runelite.client.config.RuneLiteConfig;
 import net.runelite.client.config.WarningOnExit;
 import net.runelite.client.eventbus.EventBus;
@@ -226,7 +227,14 @@ public class ClientUI
 			return;
 		}
 
-		SwingUtilities.invokeLater(() -> updateFrameConfig(event.getKey().equals("lockWindowSize")));
+		SwingUtilities.invokeLater(() ->
+		{
+			if (event.getKey().equals("appInterfaceFont"))
+			{
+				AppFontManager.apply(config.appInterfaceFont().getFont());
+			}
+			updateFrameConfig(event.getKey().equals("lockWindowSize"));
+		});
 	}
 
 	void addNavigation(NavigationButton navBtn)
@@ -321,9 +329,9 @@ public class ClientUI
 	 */
 	public void initLookAndFeel() throws Exception
 	{
-		if (config.readableUiFont())
+		if (!config.appInterfaceFont().getFont().equals(FontType.REGULAR.getFont()))
 		{
-			SwingUtilities.invokeAndWait(() -> RuneLiteLAF.setup(true, config.readableUiFontSize()));
+			SwingUtilities.invokeAndWait(() -> RuneLiteLAF.setup(config.appInterfaceFont().getFont()));
 		}
 	}
 
@@ -336,7 +344,7 @@ public class ClientUI
 		{
 			// Preserve the original theme setup order when the optional font is disabled.
 			setupDefaults();
-			if (!config.readableUiFont())
+			if (config.appInterfaceFont().getFont().equals(FontType.REGULAR.getFont()))
 			{
 				RuneLiteLAF.setup();
 			}

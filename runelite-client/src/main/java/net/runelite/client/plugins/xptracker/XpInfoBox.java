@@ -202,10 +202,10 @@ class XpInfoBox extends JPanel
 		statsPanel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
 		statsPanel.setBorder(new EmptyBorder(9, 2, 9, 2));
 
-		topLeftStat.setFont(FontManager.getUiSmallFont());
-		bottomLeftStat.setFont(FontManager.getUiSmallFont());
-		topRightStat.setFont(FontManager.getUiSmallFont());
-		bottomRightStat.setFont(FontManager.getUiSmallFont());
+		FontManager.setUiSmallFont(topLeftStat);
+		FontManager.setUiSmallFont(bottomLeftStat);
+		FontManager.setUiSmallFont(topRightStat);
+		FontManager.setUiSmallFont(bottomRightStat);
 
 		statsPanel.add(topLeftStat);     // top left
 		statsPanel.add(topRightStat);    // top right

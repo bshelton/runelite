@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+import net.runelite.client.ui.AppFontManager;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.components.shadowlabel.JShadowedLabel;
 
@@ -59,20 +60,23 @@ public class ProgressBar extends DimmableJPanel
 		setBackground(Color.GREEN.darker());
 		setForeground(Color.GREEN.brighter());
 
-		int height = UIManager.getBoolean("RuneLite.readableUiFont")
-			? Math.max(16, getFontMetrics(FontManager.getUiSmallFont()).getHeight() + 2) : 16;
-		setPreferredSize(new Dimension(100, height));
+		AppFontManager.onFontChange(this, () ->
+		{
+			int height = UIManager.getBoolean("RuneLite.customAppFont")
+				? Math.max(16, getFontMetrics(FontManager.getUiSmallFont()).getHeight() + 2) : 16;
+			setPreferredSize(new Dimension(100, height));
+		});
 
-		leftLabel.setFont(FontManager.getUiSmallFont());
+		FontManager.setUiSmallFont(leftLabel);
 		leftLabel.setForeground(Color.WHITE);
 		leftLabel.setBorder(new EmptyBorder(2, 5, 0, 0));
 
-		rightLabel.setFont(FontManager.getUiSmallFont());
+		FontManager.setUiSmallFont(rightLabel);
 		rightLabel.setForeground(Color.WHITE);
 		rightLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		rightLabel.setBorder(new EmptyBorder(2, 0, 0, 5));
 
-		centerLabel.setFont(FontManager.getUiSmallFont());
+		FontManager.setUiSmallFont(centerLabel);
 		centerLabel.setForeground(Color.WHITE);
 		centerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		centerLabel.setBorder(new EmptyBorder(2, 0, 0, 0));

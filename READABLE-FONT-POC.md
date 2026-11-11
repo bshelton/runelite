@@ -1,11 +1,13 @@
-# Optional interface font
+# App interface font
 
-Window settings > Sans-serif interface font selects Java's logical SansSerif font for desktop controls. The option defaults to off. Interface font size applies only when enabled (12–20, default 14, before display scaling). Restart after changing either setting.
+RuneLite > Window settings > App interface font uses the existing font picker: built-in, installed, and custom font families; size; bold; and italic. Changes apply immediately to app controls and built-in plugin panels. Overlay font settings remain separate.
 
-Built-in plugin panels inherit the theme font or use the UI font helpers. Game fonts, overlays, text shadows, and the existing GASP antialiasing policy are preserved. Third-party panels with explicit fonts may not follow the setting. Fixed panel widths can still truncate text.
+The default is RuneScape, size 16, with bold and italic off. That exact selection preserves the original regular, heading, and small fonts and restores the original control heights. The previous prototype checkbox and size settings are replaced by appInterfaceFont; old prototype keys are no longer used.
 
-The configuration keys remain readableUiFont and readableUiFontSize for compatibility with earlier prototype profiles. Enabling the option initializes the font before plugins construct their controls; disabling it preserves the original theme initialization order.
+AppFontManager tracks panel roots and explicit font roles with weak references, including hidden and detached controls. Changes run on the Swing event thread. Existing controls retain their UI delegates and plugin state. Layout callbacks recalculate cached heights after fonts are assigned. Game fonts and text-rendering policy remain unchanged. Third-party controls with explicit fonts do not necessarily follow this setting.
 
-Build with JDK 17 using ./gradlew :client:shadowJar. Targeted validation: ./gradlew :client:test --tests '*ReadableUiFontTest' :client:checkstyleMain :client:checkstyleTest :client:pmdMain.
+Build: ./gradlew :client:shadowJar
 
-Tests cover font selection, size bounds, plugin-list and progress-label vertical fit, original defaults, unchanged game font identity, and preservation of the antialiasing policy. This does not establish every panel layout at every size or cross-platform visual equivalence. No typography enforcement rule is included.
+Validation: ./gradlew :client:test --tests '*ReadableUiFontTest' :client:checkstyleMain :client:checkstyleTest :client:pmdMain
+
+Tests cover live family/style/size changes, hidden and newly created controls, original-font restoration, explicit plugin font preservation, shadow UI preservation, game font identity, and row/progress heights. Windows smoke testing verifies the picker and existing plugin panels update without restart. Fixed panel widths still limit long labels and very large font choices. Cross-platform visual verification remains outstanding. No typography enforcement rule is added.

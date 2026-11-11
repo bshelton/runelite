@@ -97,6 +97,7 @@ import net.runelite.client.events.ProfileChanged;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginManager;
+import net.runelite.client.ui.AppFontManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.DynamicGridLayout;
 import net.runelite.client.ui.FontManager;
@@ -307,7 +308,7 @@ class ConfigPanel extends PluginPanel
 			String name = cs.name();
 			final JLabel sectionName = new JLabel(name);
 			sectionName.setForeground(ColorScheme.BRAND_ORANGE);
-			sectionName.setFont(FontManager.getUiBoldFont());
+			FontManager.setUiBoldFont(sectionName);
 			sectionName.setToolTipText("<html>" + name + ":<br>" + cs.description() + "</html>");
 			sectionHeader.add(sectionName, BorderLayout.CENTER);
 
@@ -631,7 +632,7 @@ class ConfigPanel extends PluginPanel
 		// to build components for each combobox element in order to compute the display size of the
 		// combobox
 		box.setRenderer(listCellRenderer);
-		box.setPreferredSize(new Dimension(box.getPreferredSize().width, UIManager.getBoolean("RuneLite.readableUiFont") ? Math.max(22, box.getPreferredSize().height) : 22));
+		AppFontManager.onFontChange(box, () -> box.setPreferredSize(new Dimension(box.getPreferredSize().width, UIManager.getBoolean("RuneLite.customAppFont") ? Math.max(22, box.getPreferredSize().height) : 22)));
 
 		try
 		{

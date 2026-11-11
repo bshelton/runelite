@@ -33,6 +33,7 @@ import com.google.common.html.HtmlEscapers;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FlowLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -86,6 +87,7 @@ import net.runelite.client.externalplugins.ExternalPluginManager;
 import net.runelite.client.externalplugins.PluginHubManifest;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginManager;
+import net.runelite.client.ui.AppFontManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.DynamicGridLayout;
 import net.runelite.client.ui.FontManager;
@@ -284,9 +286,20 @@ class PluginHubPanel extends PluginPanel
 		}
 	}
 
-	// The interface font is fixed for the lifetime of this panel (restart required).
-	private final int pluginViewHeight = UIManager.getBoolean("RuneLite.readableUiFont")
-		? Math.max(86, getFontMetrics(getFont()).getHeight() * 4 + 24) : 86;
+	private Font measuredFont;
+	private int pluginViewHeight;
+
+	private int getPluginViewHeight()
+	{
+		Font font = UIManager.getFont("defaultFont");
+		if (!font.equals(measuredFont))
+		{
+			measuredFont = font;
+			pluginViewHeight = UIManager.getBoolean("RuneLite.customAppFont")
+				? Math.max(86, getFontMetrics(font).getHeight() * 4 + 24) : 86;
+		}
+		return pluginViewHeight;
+	}
 
 	private class PluginView extends JPanel
 	{
@@ -315,9 +328,9 @@ class PluginHubPanel extends PluginPanel
 			GroupLayout layout = new GroupLayout(this);
 			setLayout(layout);
 
-			pluginName.setFont(FontManager.getUiBoldFont());
-			author.setFont(FontManager.getUiSmallFont());
-			version.setFont(FontManager.getUiSmallFont());
+			FontManager.setUiBoldFont(pluginName);
+			FontManager.setUiSmallFont(author);
+			FontManager.setUiSmallFont(version);
 
 			description.setVerticalAlignment(JLabel.TOP);
 
@@ -370,26 +383,29 @@ class PluginHubPanel extends PluginPanel
 						.addComponent(addrm, 0, 57, GroupLayout.PREFERRED_SIZE)
 						.addGap(5))));
 
-			int lineHeight = description.getFontMetrics(description.getFont()).getHeight();
-			int bottomLineHeight = UIManager.getBoolean("RuneLite.readableUiFont")
-				? Math.max(16, version.getFontMetrics(version.getFont()).getHeight() + 4) : 16;
-			layout.setVerticalGroup(layout.createParallelGroup()
-				.addComponent(badge, GroupLayout.Alignment.TRAILING)
-				.addComponent(icon, pluginViewHeight, GroupLayout.DEFAULT_SIZE, pluginViewHeight)
-				.addGroup(layout.createSequentialGroup()
-					.addGap(5)
-					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(pluginName)
-						.addComponent(author))
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
-					.addComponent(description, lineHeight, GroupLayout.PREFERRED_SIZE, lineHeight * 2)
-					.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
-					.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-						.addComponent(version, bottomLineHeight, bottomLineHeight, bottomLineHeight)
-						.addComponent(help, bottomLineHeight, bottomLineHeight, bottomLineHeight)
-						.addComponent(configure, bottomLineHeight, bottomLineHeight, bottomLineHeight)
-						.addComponent(addrm, bottomLineHeight, bottomLineHeight, bottomLineHeight))
-					.addGap(5)));
+			AppFontManager.onFontChange(this, () ->
+			{
+				int lineHeight = description.getFontMetrics(description.getFont()).getHeight();
+				int bottomLineHeight = UIManager.getBoolean("RuneLite.customAppFont")
+					? Math.max(16, version.getFontMetrics(version.getFont()).getHeight() + 4) : 16;
+				layout.setVerticalGroup(layout.createParallelGroup()
+					.addComponent(badge, GroupLayout.Alignment.TRAILING)
+					.addComponent(icon, getPluginViewHeight(), GroupLayout.DEFAULT_SIZE, getPluginViewHeight())
+					.addGroup(layout.createSequentialGroup()
+						.addGap(5)
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(pluginName)
+							.addComponent(author))
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+						.addComponent(description, lineHeight, GroupLayout.PREFERRED_SIZE, lineHeight * 2)
+						.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+							.addComponent(version, bottomLineHeight, bottomLineHeight, bottomLineHeight)
+							.addComponent(help, bottomLineHeight, bottomLineHeight, bottomLineHeight)
+							.addComponent(configure, bottomLineHeight, bottomLineHeight, bottomLineHeight)
+							.addComponent(addrm, bottomLineHeight, bottomLineHeight, bottomLineHeight))
+						.addGap(5)));
+			});
 		}
 
 		void setItem(PluginItem item)
@@ -524,13 +540,13 @@ class PluginHubPanel extends PluginPanel
 		@Override
 		protected int getIndexNearPosition(int y)
 		{
-			return y / (pluginViewHeight + PluginView.SEPARATOR);
+			return y / (getPluginViewHeight() + PluginView.SEPARATOR);
 		}
 
 		@Override
 		protected Rectangle getItemPosition(int index)
 		{
-			return new Rectangle(LIST_BORDER, index * (pluginViewHeight + PluginView.SEPARATOR), getWidth() - LIST_BORDER * 2, pluginViewHeight);
+			return new Rectangle(LIST_BORDER, index * (getPluginViewHeight() + PluginView.SEPARATOR), getWidth() - LIST_BORDER * 2, getPluginViewHeight());
 		}
 
 		@Override

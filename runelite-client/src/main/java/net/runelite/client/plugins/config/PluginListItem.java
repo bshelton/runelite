@@ -48,6 +48,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import lombok.Getter;
+import net.runelite.client.ui.AppFontManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.ImageUtil;
@@ -104,8 +105,8 @@ class PluginListItem extends JPanel implements SearchablePlugin
 
 		JLabel nameLabel = new JLabel(pluginConfig.getName());
 		nameLabel.setForeground(Color.WHITE);
-		setPreferredSize(new Dimension(PluginPanel.PANEL_WIDTH, UIManager.getBoolean("RuneLite.readableUiFont")
-			? Math.max(20, nameLabel.getPreferredSize().height + 4) : 20));
+		AppFontManager.onFontChange(this, () -> setPreferredSize(new Dimension(PluginPanel.PANEL_WIDTH, UIManager.getBoolean("RuneLite.customAppFont")
+			? Math.max(20, nameLabel.getPreferredSize().height + 4) : 20)));
 
 		if (!pluginConfig.getDescription().isEmpty())
 		{

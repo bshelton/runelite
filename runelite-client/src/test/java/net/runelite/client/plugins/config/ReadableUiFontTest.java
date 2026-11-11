@@ -29,9 +29,13 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.RenderingHints;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import net.runelite.client.config.FontType;
+import net.runelite.client.ui.AppFontManager;
 import net.runelite.client.ui.FontManager;
+import net.runelite.client.ui.components.shadowlabel.JShadowedLabel;
 import net.runelite.client.ui.components.ProgressBar;
 import net.runelite.client.ui.laf.RuneLiteLAF;
 import org.junit.Test;
@@ -51,7 +55,7 @@ public class ReadableUiFontTest
 			{
 				for (int size : new int[]{12, 14, 16, 18, 20})
 				{
-					assertTrue(RuneLiteLAF.setup(true, size));
+					assertTrue(RuneLiteLAF.setup(new Font(Font.SANS_SERIF, Font.PLAIN, size)));
 					assertEquals(RenderingHints.VALUE_TEXT_ANTIALIAS_GASP, UIManager.get(RenderingHints.KEY_TEXT_ANTIALIASING));
 					PluginListItem row = row("Agility");
 					row.setSize(row.getPreferredSize());
@@ -74,10 +78,6 @@ public class ReadableUiFontTest
 					}
 					assertEquals(FontManager.getUiSmallFont(), new HotkeyButton(null, false).getFont());
 				}
-				RuneLiteLAF.setup(true, 100);
-				assertEquals(20, new JLabel().getFont().getSize());
-				RuneLiteLAF.setup(true, 1);
-				assertEquals(12, new JLabel().getFont().getSize());
 				RuneLiteLAF.setup();
 				assertEquals(gameFont, UIManager.getFont("defaultFont"));
 				assertSame(FontManager.getRunescapeSmallFont(), FontManager.getUiSmallFont());
@@ -90,6 +90,64 @@ public class ReadableUiFontTest
 			finally
 			{
 				RuneLiteLAF.setup();
+			}
+		});
+	}
+
+	@Test
+	public void existingAndHiddenControlsUpdateAndRestoreWithoutChangingGameFonts() throws Exception
+	{
+		SwingUtilities.invokeAndWait(() ->
+		{
+			RuneLiteLAF.setup();
+			JPanel hidden = new JPanel();
+			AppFontManager.register(hidden);
+			JLabel body = new JLabel("Body");
+			JShadowedLabel small = new JShadowedLabel("Small");
+			JLabel heading = new JLabel("Heading");
+			JLabel explicit = new JLabel("Plugin-owned font");
+			Font explicitFont = new Font(Font.MONOSPACED, Font.PLAIN, 11);
+			explicit.setFont(explicitFont);
+			FontManager.setUiSmallFont(small);
+			FontManager.setUiBoldFont(heading);
+			hidden.add(body);
+			hidden.add(small);
+			hidden.add(heading);
+			hidden.add(explicit);
+			Object shadowUI = small.getUI();
+			PluginListItem row = row("Agility");
+			ProgressBar progress = new ProgressBar();
+			HotkeyButton hotkey = new HotkeyButton(null, false);
+			Font gameFont = FontType.REGULAR.getFont();
+			try
+			{
+				for (String family : new String[]{Font.SANS_SERIF, Font.SERIF, Font.MONOSPACED})
+				{
+					Font selected = new Font(family, Font.ITALIC, 20);
+					AppFontManager.apply(selected);
+					assertEquals(selected, body.getFont());
+					assertEquals(selected.deriveFont(18f), small.getFont());
+					assertEquals(selected.deriveFont(Font.BOLD | Font.ITALIC), heading.getFont());
+					assertSame(explicitFont, explicit.getFont());
+					assertSame(shadowUI, small.getUI());
+					assertSame(gameFont, FontType.REGULAR.getFont());
+					assertEquals(small.getFont(), hotkey.getFont());
+					assertTrue(row.getPreferredSize().height >= body.getPreferredSize().height + 4);
+					assertTrue(progress.getPreferredSize().height >= small.getFontMetrics(small.getFont()).getHeight() + 2);
+					JLabel newlyCreated = new JLabel("New");
+					assertEquals(selected, newlyCreated.getFont());
+				}
+				AppFontManager.apply(FontType.REGULAR.getFont());
+				assertEquals(FontManager.getRunescapeFont(), body.getFont());
+				assertSame(FontManager.getRunescapeSmallFont(), small.getFont());
+				assertSame(FontManager.getRunescapeBoldFont(), heading.getFont());
+				assertEquals(20, row.getPreferredSize().height);
+				assertEquals(16, progress.getPreferredSize().height);
+				assertEquals(FontManager.getDefaultFont().deriveFont(12f), hotkey.getFont());
+			}
+			finally
+			{
+				AppFontManager.apply(FontType.REGULAR.getFont());
 			}
 		});
 	}

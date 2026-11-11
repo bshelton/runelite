@@ -38,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import javax.swing.JComponent;
 import javax.swing.UIManager;
 import javax.swing.text.StyleContext;
 import lombok.Getter;
@@ -161,6 +162,21 @@ public class FontManager
 	{
 		Font font = UIManager.getFont("RuneLite.uiSmallFont");
 		return font != null ? font : runescapeSmallFont;
+	}
+
+	public static void setUiSmallFont(JComponent component)
+	{
+		AppFontManager.bind(component, "small");
+	}
+
+	public static void setUiBoldFont(JComponent component)
+	{
+		AppFontManager.bind(component, "bold");
+	}
+
+	public static void setUiHotkeyFont(JComponent component)
+	{
+		AppFontManager.bind(component, "hotkey");
 	}
 
 	public static List<String> getSystemFonts()

@@ -124,6 +124,7 @@ public class IconTextField extends JPanel
 		innerTxt.addMouseListener(hoverEffect);
 
 		clearButton = createRHSButton(ColorScheme.PROGRESS_ERROR_COLOR, Color.PINK, FontManager.getUiBoldFont());
+		FontManager.setUiBoldFont(clearButton);
 		clearButton.setText("×");
 		clearButton.addActionListener(evt ->
 		{

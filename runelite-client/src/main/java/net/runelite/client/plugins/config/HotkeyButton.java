@@ -29,7 +29,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JButton;
-import javax.swing.UIManager;
 import lombok.Getter;
 import net.runelite.client.config.Keybind;
 import net.runelite.client.config.ModifierlessKeybind;
@@ -44,8 +43,7 @@ class HotkeyButton extends JButton
 	{
 		// Disable focus traversal keys such as tab to allow tab key to be bound
 		setFocusTraversalKeysEnabled(false);
-		setFont(UIManager.getBoolean("RuneLite.readableUiFont")
-			? FontManager.getUiSmallFont() : FontManager.getDefaultFont().deriveFont(12.f));
+		FontManager.setUiHotkeyFont(this);
 		setValue(value);
 		addMouseListener(new MouseAdapter()
 		{

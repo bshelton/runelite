@@ -141,11 +141,11 @@ public class GrandExchangeOfferSlot extends JPanel
 
 		itemName.setForeground(Color.WHITE);
 		itemName.setVerticalAlignment(JLabel.BOTTOM);
-		itemName.setFont(FontManager.getUiSmallFont());
+		FontManager.setUiSmallFont(itemName);
 
 		offerInfo.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
 		offerInfo.setVerticalAlignment(JLabel.TOP);
-		offerInfo.setFont(FontManager.getUiSmallFont());
+		FontManager.setUiSmallFont(offerInfo);
 
 		JLabel switchFaceViewIcon = new JLabel();
 		switchFaceViewIcon.setIcon(RIGHT_ARROW_ICON);
@@ -172,11 +172,11 @@ public class GrandExchangeOfferSlot extends JPanel
 
 		itemPrice.setForeground(Color.WHITE);
 		itemPrice.setVerticalAlignment(JLabel.BOTTOM);
-		itemPrice.setFont(FontManager.getUiSmallFont());
+		FontManager.setUiSmallFont(itemPrice);
 
 		offerSpent.setForeground(Color.WHITE);
 		offerSpent.setVerticalAlignment(JLabel.TOP);
-		offerSpent.setFont(FontManager.getUiSmallFont());
+		FontManager.setUiSmallFont(offerSpent);
 
 		JLabel switchDetailsViewIcon = new JLabel();
 		switchDetailsViewIcon.setIcon(LEFT_ARROW_ICON);
